@@ -35,3 +35,4 @@ wavy_bird-*.tar
 npm-debug.log
 /assets/node_modules/
 /.elixir_ls
+dbs/**
