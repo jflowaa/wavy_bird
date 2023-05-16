@@ -1,0 +1,31 @@
+<%= if not is_nil(assigns[:story]) do %>
+  <.header>
+    <div class="font-semibold leading-9 text-secondary-800">
+      Listing Jobs for <%= @story.title %>
+    </div>
+    <a
+      href={"https://news.ycombinator.com/item?id=#{@story.item_id}"}
+      class="text-[0.7525rem] no-underline hover:underline text-neutral-600"
+    >
+      Hacker News Thread
+    </a>
+  </.header>
+  <.simple_form for={%{}} id="tag-form" phx-submit="filter">
+    <.input type="text" label="Tag" name="tag" value="" />
+    <:actions>
+      <.button phx-disable-with="Loading...">Filter</.button>
+    </:actions>
+  </.simple_form>
+  <div class="w-full sm:w-auto my-6">
+    <%= for {_id, job} <- @streams.jobs do %>
+      <div class="rounded-2xl bg-primary-50 p-6 overflow-x-auto">
+        <%= raw(job.text) %>
+      </div>
+      <br />
+    <% end %>
+  </div>
+<% else %>
+  <.header>
+    No job data - try again later
+  </.header>
+<% end %>

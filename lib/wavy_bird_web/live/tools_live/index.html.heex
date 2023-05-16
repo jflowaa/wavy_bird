@@ -1,0 +1,19 @@
+<WavyBirdWeb.Components.tabs id="my-tabs">
+  <:tab title="Encode/Decode" current>
+    <.live_component module={WavyBirdWeb.ToolsLive.EncodingComponent} id="encoding-tab" />
+  </:tab>
+
+  <:tab title="JWT Decoder">
+    <p class="mt-2">todo</p>
+  </:tab>
+
+  <:tab title="UUID Generator">
+    <.live_component module={WavyBirdWeb.ToolsLive.UuidComponent} id="uuid-tab" />
+  </:tab>
+  <:tab title="Code Name Generator">
+    <.live_component module={WavyBirdWeb.ToolsLive.CodeNameGeneratorComponent} id="code-name-tab" />
+  </:tab>
+  <:tab title="🤔">
+    <p class="mt-2">more stuff</p>
+  </:tab>
+</WavyBirdWeb.Components.tabs>
