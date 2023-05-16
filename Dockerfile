@@ -46,6 +46,7 @@ COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
 
 COPY priv priv
+COPY data data
 
 COPY lib lib
 
@@ -84,7 +85,7 @@ RUN chown nobody /app
 ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/priv/data ./bin/priv/data
+COPY --from=builder --chown=nobody:root /app/data ./bin/data
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/wavy_bird ./
 
 USER nobody

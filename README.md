@@ -1,4 +1,6 @@
-# WavyBird
+# Dev Tool Belt
+
+Site is hosted at: [devtoolbelt.xyz](https://devtoolbelt.xyz)
 
 To start your Phoenix server:
 

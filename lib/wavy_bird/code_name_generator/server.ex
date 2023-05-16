@@ -14,9 +14,8 @@ defmodule WavyBird.CodeNameGenerator.Server do
 
   def init(_) do
     words =
-      File.stream!("priv/data/words.txt")
+      File.stream!("data/words.txt")
       |> Stream.map(&String.trim_trailing/1)
-      |> Enum.to_list()
 
     {:ok, words}
   end
@@ -24,7 +23,7 @@ defmodule WavyBird.CodeNameGenerator.Server do
   def handle_call({:generate, number_of_words}, _from, state) do
     {:reply,
      {:ok,
-      Enum.map(1..5, fn _ ->
+      Enum.map(1..1, fn _ ->
         state
         |> Enum.shuffle()
         |> Enum.take(elem(Integer.parse(number_of_words), 0))
