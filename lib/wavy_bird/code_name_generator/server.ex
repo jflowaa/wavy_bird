@@ -13,30 +13,47 @@ defmodule WavyBird.CodeNameGenerator.Server do
   end
 
   def init(_) do
-    :ets.new(:words_table, [:set, :private, :named_table])
+    :ets.new(:nouns_table, [:set, :private, :named_table])
+    :ets.new(:verbs_adjectives_table, [:set, :private, :named_table])
 
-    File.stream!("data/words.txt")
+    File.stream!("data/nouns.txt")
     |> Stream.map(&String.trim_trailing/1)
     |> Stream.with_index(1)
     |> Stream.each(fn x ->
-      :ets.insert(:words_table, {elem(x, 1), elem(x, 0)})
+      :ets.insert(:nouns_table, {elem(x, 1), elem(x, 0)})
     end)
     |> Stream.run()
 
-    {:ok, Keyword.get(:ets.info(:words_table), :size)}
+    File.stream!("data/verbs.txt")
+    |> Stream.concat(File.stream!("data/verbs.txt"))
+    |> Stream.map(&String.trim_trailing/1)
+    |> Stream.with_index(1)
+    |> Stream.each(fn x ->
+      :ets.insert(:verbs_adjectives_table, {elem(x, 1), elem(x, 0)})
+    end)
+    |> Stream.run()
+
+    {:ok,
+     {Keyword.get(:ets.info(:nouns_table), :size),
+      Keyword.get(:ets.info(:verbs_adjectives_table), :size)}}
   end
 
-  def handle_call({:generate, number_of_words}, _from, state) do
+  def handle_call(:generate, _from, state) do
     {:reply,
      {:ok,
       Enum.map(1..6, fn _ ->
-        Enum.map(1..elem(Integer.parse(number_of_words), 0), fn _ ->
-          :ets.lookup(:words_table, Enum.random(1..state))
+        words = [
+          :ets.lookup(:nouns_table, Enum.random(1..elem(state, 0)))
+          |> hd
+          |> elem(1)
+          |> Macro.camelize(),
+          :ets.lookup(:verbs_adjectives_table, Enum.random(1..elem(state, 1)))
           |> hd
           |> elem(1)
           |> Macro.camelize()
-        end)
-        |> Enum.join(" ")
+        ]
+
+        "#{Enum.shuffle(words)}"
       end)}, state}
   end
 end

@@ -6,7 +6,6 @@ defmodule WavyBirdWeb.ToolsLive.CodeNameGeneratorComponent do
     ~H"""
     <div>
       <.simple_form for={%{}} id="code-name-form" phx-target={@myself} phx-submit="generate">
-        <.input type="number" name="number" value="2" max="4" min="1" />
         <:actions>
           <.button phx-disable-with="Generating...">Generate</.button>
         </:actions>
@@ -26,8 +25,8 @@ defmodule WavyBirdWeb.ToolsLive.CodeNameGeneratorComponent do
   end
 
   @impl true
-  def handle_event("generate", %{"number" => number}, socket) do
-    {:ok, result} = WavyBird.CodeNameGenerator.Client.generate(number)
+  def handle_event("generate", _, socket) do
+    {:ok, result} = WavyBird.CodeNameGenerator.Client.generate()
 
     {:noreply,
      socket
