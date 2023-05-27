@@ -10,13 +10,15 @@ defmodule WavyBirdWeb.ToolsLive.EncodingComponent do
           type="select"
           name="operation"
           options={["Encode", "Decode"]}
-          value={if assigns[:operation], do: @operation, else: "Encode"}
+          value="Encode"
+          phx-update="ignore"
         />
         <.input
           type="select"
           name="scheme"
           options={["Base16", "Base32", "Base64"]}
           value={if assigns[:scheme], do: @scheme, else: "Base64"}
+          phx-update="ignore"
         />
         <.input type="textarea" name="target" value={if assigns[:target], do: @target, else: ""} />
       </.simple_form>
@@ -30,44 +32,33 @@ defmodule WavyBirdWeb.ToolsLive.EncodingComponent do
 
   @impl true
   def handle_event("convert", payload, socket) do
-    if Enum.any?(Map.get(payload, "_target"), fn x -> x == "operation" end) do
-      {:noreply,
-       socket
-       |> assign(:result, nil)
-       |> assign(:target, nil)
-       |> assign(:scheme, nil)
-       |> assign(:operation, Map.get(payload, "operation"))}
-    else
-      result =
-        cond do
-          String.starts_with?(Map.get(payload, "scheme"), "Base") ->
-            base(
-              Map.get(payload, "scheme"),
-              Map.get(payload, "operation"),
-              Map.get(payload, "target")
-            )
+    result =
+      cond do
+        String.starts_with?(Map.get(payload, "scheme"), "Base") ->
+          base(
+            Map.get(payload, "scheme"),
+            Map.get(payload, "operation"),
+            Map.get(payload, "target")
+          )
 
-          true ->
-            {:ok, nil}
-        end
-
-      case result do
-        {:ok, value} ->
-          jason_encode = Jason.encode_to_iodata(value)
-
-          {:noreply,
-           socket
-           |> assign(
-             :result,
-             if(elem(jason_encode, 0) == :ok, do: value, else: nil)
-           )
-           |> assign(:target, Map.get(payload, "target"))
-           |> assign(:scheme, Map.get(payload, "scheme"))}
-
-        _ ->
-          {:noreply,
-           socket |> assign(:result, nil) |> assign(:target, Map.get(payload, "target"))}
+        true ->
+          {:ok, nil}
       end
+
+    case result do
+      {:ok, value} ->
+        jason_encode = Jason.encode_to_iodata(value)
+
+        {:noreply,
+         socket
+         |> assign(
+           :result,
+           if(elem(jason_encode, 0) == :ok, do: value, else: nil)
+         )
+         |> assign(:target, Map.get(payload, "target"))}
+
+      _ ->
+        {:noreply, socket |> assign(:result, nil) |> assign(:target, Map.get(payload, "target"))}
     end
   end
 
