@@ -1,4 +1,16 @@
 <%= if not is_nil(assigns[:story]) do %>
+  <%= if not is_nil(assigns[:stories]) do %>
+    <.simple_form for={%{}} id="story-form" phx-change="set_story">
+      <.input
+        type="select"
+        name="story"
+        options={Enum.map(elem(@stories, 1), fn x -> Map.get(x, :title) end)}
+        value={@story.title}
+        label="Change Thread"
+        phx-update="ignore"
+      />
+    </.simple_form>
+  <% end %>
   <.header>
     <div class="font-semibold leading-9 text-secondary-800">
       Listing Jobs for <%= @story.title %>
@@ -11,7 +23,20 @@
     </a>
   </.header>
   <.simple_form for={%{}} id="tag-form" phx-submit="filter">
-    <.input type="text" label="Tag" name="tag" value="" />
+    <.input
+      type="text"
+      label="Keywords (Comma separated)"
+      name="tag"
+      value=""
+      phx-update="ignore"
+    />
+    <.input
+      type="checkbox"
+      label="Exclusive (and)"
+      name="exclusive"
+      phx-update="ignore"
+      value={false}
+    />
     <:actions>
       <.button phx-disable-with="Loading...">Filter</.button>
     </:actions>
