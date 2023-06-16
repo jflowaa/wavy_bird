@@ -1,0 +1,46 @@
+# ML Code Name Generator
+
+```elixir
+Mix.install(
+  [
+    {:kino_bumblebee, "~> 0.3.0"},
+    {:exla, "~> 0.5.1"}
+  ],
+  config: [nx: [default_backend: EXLA.Backend]]
+)
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"compiler":"exla","max_new_tokens":100,"min_new_tokens":null,"sequence_length":100,"task_id":"conversation","variant_id":"blenderbot_1b"},"chunks":[[0,525],[527,540]],"kind":"Elixir.KinoBumblebee.TaskCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, model_info} = Bumblebee.load_model({:hf, "facebook/blenderbot-1B-distill"})
+{:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "facebook/blenderbot-1B-distill"})
+
+{:ok, generation_config} =
+  Bumblebee.load_generation_config({:hf, "facebook/blenderbot-1B-distill"})
+
+generation_config = Bumblebee.configure(generation_config, max_new_tokens: 100)
+
+serving =
+  Bumblebee.Text.conversation(model_info, tokenizer, generation_config,
+    compile: [batch_size: 1, sequence_length: 100],
+    defn_options: [compiler: EXLA]
+  )
+
+frame = Kino.Frame.new()
+inputs = [message: Kino.Input.text("Message")]
+form = Kino.Control.form(inputs, submit: "Send message", reset_on_submit: [:message])
+
+Kino.listen(form, nil, fn %{data: %{message: message}}, history ->
+  Kino.Frame.append(frame, Kino.Markdown.new("**Me:** #{message}"))
+
+  %{text: text, history: history} = Nx.Serving.run(serving, %{text: message, history: history})
+
+  Kino.Frame.append(frame, Kino.Markdown.new("**Bot:** #{text}"))
+  {:cont, history}
+end)
+
+Kino.Layout.grid([frame, form], boxed: true, gap: 16)
+```

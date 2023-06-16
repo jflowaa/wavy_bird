@@ -27,7 +27,7 @@ defmodule WavyBird.HnJobs.Server do
   end
 
   def handle_call(:get_latest_story, _from, state) do
-    case Exqlite.Sqlite3.open(@story_database_path) do
+    case Exqlite.Sqlite3.open(@story_database_path, mode: :readonly) do
       {:ok, conn} ->
         case Exqlite.Sqlite3.prepare(conn, @latest_story_query) do
           {:ok, statement} ->
@@ -50,7 +50,7 @@ defmodule WavyBird.HnJobs.Server do
   end
 
   def handle_call(:get_stories, _from, state) do
-    case Exqlite.Sqlite3.open(@story_database_path) do
+    case Exqlite.Sqlite3.open(@story_database_path, mode: :readonly) do
       {:ok, conn} ->
         case Exqlite.Sqlite3.prepare(conn, @top_stories_query) do
           {:ok, statement} ->
@@ -80,7 +80,7 @@ defmodule WavyBird.HnJobs.Server do
   end
 
   def handle_call({:get_story_id, story_title}, _from, state) do
-    case Exqlite.Sqlite3.open(@story_database_path) do
+    case Exqlite.Sqlite3.open(@story_database_path, mode: :readonly) do
       {:ok, conn} ->
         case Exqlite.Sqlite3.prepare(conn, @get_story_id_by_title_query) do
           {:ok, statement} ->
@@ -104,7 +104,7 @@ defmodule WavyBird.HnJobs.Server do
   end
 
   def handle_call({:get_jobs, story_id}, _from, state) do
-    case Exqlite.Sqlite3.open("#{@database_root}/story_#{story_id}.db") do
+    case Exqlite.Sqlite3.open("#{@database_root}/story_#{story_id}.db", mode: :readonly) do
       {:ok, conn} ->
         case Exqlite.Sqlite3.prepare(conn, @all_postings_query) do
           {:ok, statement} ->

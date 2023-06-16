@@ -1,0 +1,100 @@
+# HN Jobs Scraper
+
+```elixir
+Mix.install([
+  :kino,
+  :tesla,
+  :jason,
+  :hackney,
+  :exqlite,
+  :kino_db,
+  :ex_sqlean
+])
+```
+
+## API Setup
+
+```elixir
+defmodule HackerNewsApi do
+  use Tesla
+
+  plug(Tesla.Middleware.BaseUrl, "https://hacker-news.firebaseio.com/v0/")
+  plug(Tesla.Middleware.JSON)
+  adapter(Tesla.Adapter.Hackney, recv_timeout: 10_000)
+
+  def get_item_by_id(item_id) do
+    get("item/#{item_id}.json")
+  end
+
+  def get_who_is_hiring_user() do
+    get("user/whoishiring.json")
+  end
+end
+```
+
+## Execute
+
+```elixir
+{:ok, conn} = Exqlite.Sqlite3.open("/Users/jack/source/hn_jobs/hn_jobs.db")
+
+Exqlite.Sqlite3.execute(
+  conn,
+  "create table if not exists raw_jobs (id integer primary key, item_id integer, posting text)"
+)
+
+{:ok, exists_statement} =
+  Exqlite.Sqlite3.prepare(conn, "select count(1) from raw_jobs where item_id = (?1)")
+
+{:ok, insert_statement} =
+  Exqlite.Sqlite3.prepare(conn, "insert into raw_jobs (item_id, posting) values ((?1), (?2))")
+
+HackerNewsApi.get_who_is_hiring_user()
+|> elem(1)
+|> Map.get(:body)
+|> Map.get("submitted")
+|> List.first()
+|> HackerNewsApi.get_item_by_id()
+|> elem(1)
+|> Map.get(:body)
+|> Map.get("kids")
+|> Enum.each(fn x ->
+  Exqlite.Sqlite3.bind(conn, exists_statement, [x])
+  {:row, count} = Exqlite.Sqlite3.step(conn, exists_statement)
+
+  if List.first(count) == 0 do
+    text = HackerNewsApi.get_item_by_id(x) |> elem(1) |> Map.get(:body) |> Map.get("text")
+    Exqlite.Sqlite3.bind(conn, insert_statement, [x, text])
+    Exqlite.Sqlite3.step(conn, insert_statement)
+  end
+end)
+```
+
+```elixir
+{:ok, conn} = Exqlite.Sqlite3.open("/Users/jack/source/hn_jobs/hn_jobs.db")
+{:ok, iterate_statement} = Exqlite.Sqlite3.prepare(conn, "select * from raw_jobs")
+
+Stream.iterate(Exqlite.Sqlite3.step(conn, iterate_statement), fn _ ->
+  Exqlite.Sqlite3.step(conn, iterate_statement)
+end)
+|> Stream.take_while(fn x -> x != :done and elem(x, 0) == :row end)
+```
+
+```elixir
+{:ok, conn} = Exqlite.Basic.open("/Users/jack/source/hn_jobs/hn_jobs.db")
+Exqlite.Basic.enable_load_extension(conn)
+Exqlite.Basic.load_extension(conn, ExSqlean.path_for("re"))
+
+sql = "select posting from raw_jobs where "
+tags = ["elixir", "python"]
+exclusive = false
+
+predicate =
+  tags
+  |> Enum.with_index(1)
+  |> Enum.map(fn x -> "regexp_like(posting, (?#{elem(x, 1)}))" end)
+  |> Enum.join(if exclusive, do: " and ", else: " or ")
+
+IO.inspect(predicate)
+
+Exqlite.Basic.exec(conn, sql <> predicate, tags)
+```

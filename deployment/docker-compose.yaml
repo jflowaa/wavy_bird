@@ -2,6 +2,7 @@ version: '2'
 services:
   webhost:
     image: wavy-bird:latest
+    # image: registry.devtoolbelt.xyz/wavy-bird:latest
     restart: always
     ports:
       - 4001:4000
