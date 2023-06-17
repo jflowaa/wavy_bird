@@ -2,33 +2,34 @@ name: Build Wavy Bird Image
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Docker Login
-      uses: docker/login-action@v2.2.0
-      with:
-        registry: registry.devtoolbelt.xyz
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-    - name: Build Image
-      run: docker build . -t registry.devtoolbelt.xyz/wavy-bird:latest --build-arg MIX_ENV="prod"
-    - name: Push Image
-      run: docker push registry.devtoolbelt.xyz/wavy-bird:latest
-    - name: Copy Docker Compose and Start
-      uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
-      with:
-        host: ${{ secrets.VM_IP }}
-        user: ${{ secrets.VM_USERNAME }}
-        key: ${{ secrets.VM_KEY }}
-        scp: |
-          deployment/docker-compose.yaml => wavy_bird/
-        last_ssh: |
-          docker-compose -f wavy_bird/docker-compose.yaml -p wavy_bird down
-          docker-compose -f wavy_bird/docker-compose.yaml -p wavy_bird up -d
+      - uses: actions/checkout@v3
+      - name: Docker Login
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: registry.devtoolbelt.xyz
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Build Image
+        run: docker build . -t registry.devtoolbelt.xyz/wavy-bird:latest --build-arg MIX_ENV="prod"
+      - name: Push Image
+        run: docker push registry.devtoolbelt.xyz/wavy-bird:latest
+      - name: Copy Docker Compose and Start
+        uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
+        with:
+          host: ${{ secrets.VM_IP }}
+          user: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_KEY }}
+          scp: |
+            deployment/docker-compose.yaml => wavy_bird/
+            data => wavy_bird/
+          last_ssh: |
+            docker-compose -f wavy_bird/docker-compose.yaml -p wavy_bird down
+            docker-compose -f wavy_bird/docker-compose.yaml -p wavy_bird up -d
