@@ -5,15 +5,15 @@ defmodule WavyBirdWeb.HttpJSON do
   end
 
   defp get_context(conn) do
-    %{
-      remote_ip: conn |> Map.get(:remote_ip) |> Tuple.to_list() |> Enum.join("."),
-      request_headers:
-        conn
+    headers = conn
         |> Map.get(:req_headers)
         |> Enum.map(fn x ->
           %{elem(x, 0) => Tuple.to_list(x) |> List.last()}
         end)
-        |> Enum.reduce(fn x, y -> Map.merge(x, y) end),
+        |> Enum.reduce(fn x, y -> Map.merge(x, y) end)
+    %{
+      remote_ip: Map.get(headers, "cf-connecting-ip", conn |> Map.get(:remote_ip) |> :inet.ntoa() |> to_string()),
+      request_headers: headers,
       query_parameters: Map.get(conn, :query_params),
       request_body: Map.get(conn, :req_body)
     }
