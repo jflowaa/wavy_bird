@@ -33,3 +33,39 @@
     path="/api/status/:status_code"
   />
 </details>
+
+<details class="bg-secondary-100/80 open:bg-secondary-100">
+  <summary class="bg-inherit px-5 py-3 text-lg cursor-pointer">
+    Delay Response
+  </summary>
+  <div class="bg-neutral-50 px-5 py-3 border border-secondary-100 text-sm font-light">
+    <p>Delay the response from server for N seconds</p>
+  </div>
+  <.live_component
+    module={WavyBirdWeb.WebSandboxLive.HttpOperationComponent}
+    id="delay-operation"
+    operation="get"
+    path="/api/delay/:seconds"
+  />
+</details>
+
+<details class="bg-secondary-100/80 open:bg-secondary-100">
+  <summary class="bg-inherit px-5 py-3 text-lg cursor-pointer">
+    Cookies
+  </summary>
+  <div class="bg-neutral-50 px-5 py-3 border border-secondary-100 text-sm font-light">
+    <p>Add or remove cookies</p>
+  </div>
+  <.live_component
+    module={WavyBirdWeb.WebSandboxLive.HttpOperationComponent}
+    id="cookie-set-operation"
+    operation="post"
+    path="/api/cookie/set/:key/:value"
+  />
+  <.live_component
+    module={WavyBirdWeb.WebSandboxLive.HttpOperationComponent}
+    id="cookie-remove-operation"
+    operation="delete"
+    path="/api/cookie/remove/:key"
+  />
+</details>

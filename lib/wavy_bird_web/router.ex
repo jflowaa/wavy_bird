@@ -42,6 +42,8 @@ defmodule WavyBirdWeb.Router do
     delete "/status/:status", HttpController, :status
 
     get "/delay/:seconds", HttpController, :delay
+    post "/cookie/set/:key/:value", HttpController, :set_cookie
+    delete "/cookie/remove/:delete", HttpController, :remove_cookie
   end
 
   # Enable Swoosh mailbox preview in development
