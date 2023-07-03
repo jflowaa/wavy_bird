@@ -1,0 +1,35 @@
+<div class="mx-auto max-w-xl lg:mx-0">
+  <p class="mt-4 text-xl font-semibold leading-10 tracking-tighter text-primary-900">
+    HTTP Endpoints
+  </p>
+</div>
+
+<details class="bg-secondary-100/80 open:bg-secondary-100">
+  <summary class="bg-inherit px-5 py-3 text-lg cursor-pointer">
+    Method Specific
+  </summary>
+  <div class="bg-neutral-50 px-5 py-3 border border-secondary-100 text-sm font-light">
+    <p>Endpoints for response handling based on method</p>
+  </div>
+  <.live_component
+    module={WavyBirdWeb.WebSandboxLive.HttpOperationComponent}
+    id="get-operation"
+    operation="get"
+    path="/api/get"
+  />
+</details>
+
+<details class="bg-secondary-100/80 open:bg-secondary-100">
+  <summary class="bg-inherit px-5 py-3 text-lg cursor-pointer">
+    Status Code Specific
+  </summary>
+  <div class="bg-neutral-50 px-5 py-3 border border-secondary-100 text-sm font-light">
+    <p>Endpoints for status code testing</p>
+  </div>
+  <.live_component
+    module={WavyBirdWeb.WebSandboxLive.HttpOperationComponent}
+    id="status-operation"
+    operation="get"
+    path="/api/status/:status_code"
+  />
+</details>

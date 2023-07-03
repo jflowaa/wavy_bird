@@ -1,9 +1,10 @@
 defmodule WavyBirdWeb.PageController do
   use WavyBirdWeb, :controller
-
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
     render(conn, :home)
+  end
+
+  def web_sandbox(conn, _params) do
+    render(conn, :web_sandbox)
   end
 end

@@ -1,0 +1,23 @@
+<details class="ml-5 bg-secondary-100/80 open:bg-secondary-100">
+  <summary class="bg-inherit px-5 py-3 text-lg cursor-pointer">
+    <%= String.upcase(@operation) %>
+    <span class="text-sm font-light"><%= String.downcase(@path) %></span>
+  </summary>
+  <div class="bg-neutral-50 px-5 py-3 border border-secondary-200 font-light">
+    <div>
+      <h1>Parameters</h1>
+    </div>
+    <div>
+      <h1>Responses</h1>
+    </div>
+    <div>
+      <.simple_form for={%{}} id={"#{@id}-form"} phx-target={@myself} phx-submit="send">
+        <.input type="hidden" name="operation" value={@operation} phx-update="ignore" />
+        <.input type="hidden" name="path" value={@path} phx-update="ignore" />
+        <:actions>
+          <.button phx-disable-with="Sending...">Send</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+  </div>
+</details>
