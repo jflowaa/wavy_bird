@@ -3,7 +3,7 @@ defmodule WavyBirdWeb.HttpController do
 
   def echo(conn, _params), do: render(conn, :echo)
 
-  def status(conn, %{"status" => status}), do: conn |> put_status(String.to_integer(status)) |> render(:echo)
+  def status(conn, %{"code" => code}), do: conn |> put_status(String.to_integer(code)) |> render(:echo)
 
   def delay(conn, %{"seconds" => seconds}) do
     Process.sleep(String.to_integer(seconds) * 1000)

@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: HTTP Sandbox API Spec
+  description: |-
+    Documentation for HTTP sandbox endpoints. Inspired by https://httpbin.org/
+
+    All endpoints are hosted at https://devtoolbelt.xyz/api
+  version: 1.0.0
+externalDocs:
+  description: Web API powered by Phoenix
+  url: https://www.phoenixframework.org/
+servers:
+  - url: https://devtoolbelt.xyz/api
+tags:
+  - name: Method
+    description: Endpoints for response handling based on method
+  - name: Status Code
+    description: Endpoints for status code testing
+  - name: Delay
+    description: Delay the response from server for N seconds
+  - name: Cookie
+    description: Add or remove cookies
+paths:
+  /get:
+    get:
+      tags:
+        - Method
+      summary: For testing GET method requests
+      operationId: getMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /post:
+    post:
+      tags:
+        - Method
+      summary: For testing POST method requests
+      operationId: postMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /put:
+    put:
+      tags:
+        - Method
+      summary: For testing PUT method requests
+      operationId: putMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /patch:
+    patch:
+      tags:
+        - Method
+      summary: For testing PATCH method requests
+      operationId: patchMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /delete:
+    delete:
+      tags:
+        - Method
+      summary: For testing DELETE method requests
+      operationId: deleteMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /head:
+    head:
+      tags:
+        - Method
+      summary: For testing HEAD method requests
+      operationId: headMethod
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+
+  /status/{code}:
+    get:
+      tags:
+        - Status Code
+      summary: For testing status code responses for GET method requests
+      operationId: getStatusCode
+      parameters:
+        - name: code
+          in: path
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+    post:
+      tags:
+        - Status Code
+      summary: For testing status code responses for POST method requests
+      operationId: postStatusCode
+      parameters:
+        - name: code
+          in: path
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+    put:
+      tags:
+        - Status Code
+      summary: For testing status code responses for PUT method requests
+      operationId: putStatusCode
+      parameters:
+        - name: code
+          in: path
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+    patch:
+      tags:
+        - Status Code
+      summary: For testing status code responses for PATCH method requests
+      operationId: patchStatusCode
+      parameters:
+        - name: code
+          in: path
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+    delete:
+      tags:
+        - Status Code
+      summary: For testing status code responses for DELETE method requests
+      operationId: deleteStatusCode
+      parameters:
+        - name: code
+          in: path
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /delay/{seconds}:
+    get:
+      tags:
+        - Delay
+      summary: For testing scenarios of extended service responses
+      operationId: delayMethod
+      parameters:
+        - name: seconds
+          in: path
+          description: Number of seconds for server to wait until responding
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: status_code
+          in: query
+          description: Status code to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /cookie/set/{key}/{value}:
+    post:
+      tags:
+        - Cookie
+      summary: For setting a cookie on server connection
+      operationId: setCookieMethod
+      parameters:
+        - name: key
+          in: path
+          description: Name of the cookie
+          required: true
+          schema:
+            type: string
+        - name: value
+          in: path
+          description: Value for the cookie
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+  /cookie/remove/{key}:
+    delete:
+      tags:
+        - Cookie
+      summary: For removing a cookie from server connection
+      operationId: removeCookieMethod
+      parameters:
+        - name: key
+          in: path
+          description: Name of the cookie
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/context"
+components:
+  schemas:
+    context:
+      type: object
+      properties:
+        remote_ip:
+          type: string
+          example: 127.0.0.1

@@ -7,4 +7,8 @@ defmodule WavyBirdWeb.PageController do
   def web_sandbox(conn, _params) do
     render(conn, :web_sandbox)
   end
+
+  def web_http_sandbox(conn, _params) do
+    render(conn, :http_redoc)
+  end
 end

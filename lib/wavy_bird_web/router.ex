@@ -19,9 +19,9 @@ defmodule WavyBirdWeb.Router do
 
     get "/", PageController, :home
     get "/web/sandbox", PageController, :web_sandbox
+    get "/web/sandbox/http", PageController, :web_http_sandbox
     live "/tools", ToolsLive.Index
     live "/hn/jobs", HnJobsLive.Index
-    live "/web/sandbox/http", WebSandboxLive.Http
     live "/web/sandbox/websocket", WebSandboxLive.Websocket
   end
 
@@ -35,13 +35,14 @@ defmodule WavyBirdWeb.Router do
     delete "/delete", HttpController, :echo
     head "/head", HttpController, :echo
 
-    get "/status/:status", HttpController, :status
-    post "/status/:status", HttpController, :status
-    put "/status/:status", HttpController, :status
-    patch "/status/:status", HttpController, :status
-    delete "/status/:status", HttpController, :status
+    get "/status/:code", HttpController, :status
+    post "/status/:code", HttpController, :status
+    put "/status/:code", HttpController, :status
+    patch "/status/:code", HttpController, :status
+    delete "/status/:code", HttpController, :status
 
     get "/delay/:seconds", HttpController, :delay
+
     post "/cookie/set/:key/:value", HttpController, :set_cookie
     delete "/cookie/remove/:delete", HttpController, :remove_cookie
   end
