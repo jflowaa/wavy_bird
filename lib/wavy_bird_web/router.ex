@@ -40,6 +40,8 @@ defmodule WavyBirdWeb.Router do
     put "/status/:status", HttpController, :status
     patch "/status/:status", HttpController, :status
     delete "/status/:status", HttpController, :status
+
+    get "/delay/:seconds", HttpController, :delay
   end
 
   # Enable Swoosh mailbox preview in development

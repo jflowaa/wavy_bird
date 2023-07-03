@@ -6,6 +6,7 @@ defmodule WavyBirdWeb.HttpJSON do
 
   defp get_context(conn) do
     %{
+      remote_ip: conn |> Map.get(:remote_ip) |> Tuple.to_list() |> Enum.join("."),
       request_headers:
         conn
         |> Map.get(:req_headers)
