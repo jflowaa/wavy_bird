@@ -1,56 +1,61 @@
-<%= if not is_nil(assigns[:story]) do %>
-  <%= if not is_nil(assigns[:stories]) do %>
-    <.simple_form for={%{}} id="story-form" phx-change="set_story">
+<div class="max-w-3xl">
+  <%= if not is_nil(assigns[:story]) do %>
+    <%= if not is_nil(assigns[:stories]) do %>
+      <.simple_form for={%{}} id="story-form" phx-change="set_story">
+        <.input
+          id="select-story"
+          type="select"
+          name="story"
+          options={Enum.map(elem(@stories, 1), fn x -> Map.get(x, :title) end)}
+          value={@story.title}
+          label="Change Thread"
+          phx-update="ignore"
+        />
+      </.simple_form>
+    <% end %>
+    <.header>
+      <div class="font-semibold leading-9 text-primary-800">
+        Listing Jobs for <%= @story.title %>
+      </div>
+      <a
+        href={"https://news.ycombinator.com/item?id=#{@story.item_id}"}
+        class="text-[0.7525rem] no-underline hover:underline text-neutral-600"
+      >
+        Hacker News Thread
+      </a>
+    </.header>
+    <.simple_form for={%{}} id="tag-form" phx-submit="filter">
       <.input
-        type="select"
-        name="story"
-        options={Enum.map(elem(@stories, 1), fn x -> Map.get(x, :title) end)}
-        value={@story.title}
-        label="Change Thread"
+        id="filters-text"
+        type="text"
+        label="Keywords (Comma separated)"
+        name="tag"
+        value=""
         phx-update="ignore"
       />
+      <.input
+        id="exclusive-checkbox"
+        type="checkbox"
+        label="Exclusive (and)"
+        name="exclusive"
+        phx-update="ignore"
+        value={false}
+      />
+      <:actions>
+        <.button phx-disable-with="Loading...">Filter</.button>
+      </:actions>
     </.simple_form>
-  <% end %>
-  <.header>
-    <div class="font-semibold leading-9 text-secondary-800">
-      Listing Jobs for <%= @story.title %>
+    <div class="w-full sm:w-auto my-6">
+      <%= for {_id, job} <- @streams.jobs do %>
+        <div class="rounded-2xl bg-primary-50 p-6 overflow-x-auto">
+          <%= raw(job.text) %>
+        </div>
+        <br />
+      <% end %>
     </div>
-    <a
-      href={"https://news.ycombinator.com/item?id=#{@story.item_id}"}
-      class="text-[0.7525rem] no-underline hover:underline text-neutral-600"
-    >
-      Hacker News Thread
-    </a>
-  </.header>
-  <.simple_form for={%{}} id="tag-form" phx-submit="filter">
-    <.input
-      type="text"
-      label="Keywords (Comma separated)"
-      name="tag"
-      value=""
-      phx-update="ignore"
-    />
-    <.input
-      type="checkbox"
-      label="Exclusive (and)"
-      name="exclusive"
-      phx-update="ignore"
-      value={false}
-    />
-    <:actions>
-      <.button phx-disable-with="Loading...">Filter</.button>
-    </:actions>
-  </.simple_form>
-  <div class="w-full sm:w-auto my-6">
-    <%= for {_id, job} <- @streams.jobs do %>
-      <div class="rounded-2xl bg-primary-50 p-6 overflow-x-auto">
-        <%= raw(job.text) %>
-      </div>
-      <br />
-    <% end %>
-  </div>
-<% else %>
-  <.header>
-    No job data - try again later
-  </.header>
-<% end %>
+  <% else %>
+    <.header>
+      No job data - try again later
+    </.header>
+  <% end %>
+</div>

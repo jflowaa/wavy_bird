@@ -64,15 +64,17 @@ defmodule WavyBird.HnJobs.Scraper do
       if List.first(count) == 0 do
         body = HnApiClient.get_item_by_id(x) |> elem(1) |> Map.get(:body)
 
-        Exqlite.Sqlite3.bind(conn, insert_statement, [
-          x,
-          Map.get(body, "by"),
-          Map.get(body, "time"),
-          Map.get(body, "text"),
-          Map.has_key?(body, "dead") || Map.has_key?(body, "deleted")
-        ])
+        if not is_nil(body) do
+          Exqlite.Sqlite3.bind(conn, insert_statement, [
+            x,
+            Map.get(body, "by"),
+            Map.get(body, "time"),
+            Map.get(body, "text"),
+            Map.has_key?(body, "dead") || Map.has_key?(body, "deleted")
+          ])
 
-        Exqlite.Sqlite3.step(conn, insert_statement)
+          Exqlite.Sqlite3.step(conn, insert_statement)
+        end
       end
     end)
   end
