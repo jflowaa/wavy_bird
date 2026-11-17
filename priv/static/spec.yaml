@@ -4,13 +4,13 @@ info:
   description: |-
     Documentation for HTTP sandbox endpoints. Inspired by https://httpbin.org/
 
-    All endpoints are hosted at https://devtoolbelt.xyz/api
+    All endpoints are hosted at https://wavy-bird.jack-develops.com/api
   version: 1.0.0
 externalDocs:
   description: Web API powered by Phoenix
   url: https://www.phoenixframework.org/
 servers:
-  - url: https://devtoolbelt.xyz/api
+  - url: https://wavy-bird.jack-develops.com/api
 tags:
   - name: Method
     description: Endpoints for response handling based on method
